@@ -37,10 +37,10 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG_DB -f Dockerfile_mysql . 
         
         # Get Git tag
-        tag = (returnStdout: true, script: "git rev-parse --short=10 HEAD").trim()
+        TAG=$(git rev-parse --short=10 HEAD)
         
         # Unit test
-        docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=pw -d $ECR_REGISTRY/$ECR_REPOSITORY_DB:${tag}
+        docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=pw -d $ECR_REGISTRY/$ECR_REPOSITORY_DB:$TAG
         docker ps
         
         echo "Pause for 10 seconds to let container start"
@@ -49,7 +49,7 @@ jobs:
         docker exec mysql mysql -ppw -e "show databases;"
         
         # Docker push
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG_DB
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_DB:$TAG
         
     - name: Build, test, tag, and push WebApp image to Amazon ECR
       env:
