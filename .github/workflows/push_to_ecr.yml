@@ -37,7 +37,7 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_DB:$IMAGE_TAG_DB -f Dockerfile_mysql . 
         
         # Get Git tag
-        tag = sh(returnStdout: true, script: "git rev-parse --short=10 HEAD").trim()
+        tag = (returnStdout: true, script: "git rev-parse --short=10 HEAD").trim()
         
         # Unit test
         docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=pw -d $ECR_REGISTRY/$ECR_REPOSITORY_DB:${tag}
